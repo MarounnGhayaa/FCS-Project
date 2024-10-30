@@ -12,23 +12,7 @@ class City:
     def __init__(self, name, next_city):
         self.name = name
         self.next_city = next_city
-def first_main_menu(n):
-        while True:
-            print("\nWelcome to We Deliver! Please enter an option:")
-            print("1. Drivers' menu")
-            print("2. Cities' menu")
-            print("3. Exit")
-            option = int(input("Enter an option by entering its number: "))
-            if option == 1:
-                drivers_main_menu(n)
-            elif option == 2:
-                print("Thank you!2")
-            elif option == 3:
-                print("Thank you!")
-                break
-            else:
-                print("Invalid option.")
-def drivers_main_menu(n):
+def drivers_main_menu():
     driver_id_counter = 3
     while True:
         print("\nDRIVERS' MENU")
@@ -36,12 +20,19 @@ def drivers_main_menu(n):
         print("2. To add a driver")
         print("3. Check similar drivers")
         print("4. To go back to the main menu")
-        option = int(input("Enter an option by entering its number: "))
+        option = int(input("\nEnter an option: "))
         if option == 1:
            print(drivers)
         elif option == 2:
             name = input("Enter driver's name: ")
-            start_city = input("Enter driver's start city: ") 
+            start_city = input("Enter driver's start city: ").lower()
+            if start_city not in cities:
+                city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? y/n: ").lower()
+                if city_question == "y":
+                    cities.append(start_city)
+                else:
+                    print("Both driver and city were not added!")
+                    break
             driver_id = driver_id_counter
             new_driver = Driver(driver_id, name, start_city)
             new_driver.tuple_driver()
@@ -63,5 +54,15 @@ def drivers_main_menu(n):
             break
         else:
             print("Invalid option.")
-num = int(input("Welcome to WE DELIVER! enter any number to access the system: "))
-first_main_menu(num)
+while True:
+    print("\nWelcome to We Deliver! PLEASE CHOOSE AN OPTION: \n1. Drivers' menu | 2. Cities' menu | 3. Exit")
+    option = int(input("\nEnter an option: "))
+    if option == 1:
+        drivers_main_menu()
+    elif option == 2:
+        print("Thank you!2")
+    elif option == 3:
+        print("Thank you!")
+        break
+    else:
+        print("Invalid option.")
