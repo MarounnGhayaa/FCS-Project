@@ -1,5 +1,5 @@
 drivers = [(1, "maroun", "beirut"), (2, "georges", "zahle")]
-cities = ["beirut", "tripoli", "zahle"]
+cities = ["beirut", "tripoli", "zahle", "jbeil"]
 class Driver:
     def __init__ (self, driver_id, driver_name, start_city):
         self.driver_id = driver_id
@@ -27,7 +27,7 @@ def drivers_main_menu():
             name = input("Enter driver's name: ")
             start_city = input("Enter driver's start city: ").lower()
             if start_city not in cities:
-                city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? y/n: ").lower()
+                city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? (y/n): ").lower()
                 if city_question == "y":
                     cities.append(start_city)
                 else:
@@ -54,13 +54,37 @@ def drivers_main_menu():
             break
         else:
             print("Invalid option.")
+def cities_main_menu():
+    while True:
+        print("\nCITIES' MENU")
+        print("1. Show cities")
+        print("2. Search city")
+        print("3. Print neighboring cities")
+        print("4. Drivers delivering to city")
+        option = int(input("\nEnter an option: "))
+        if option == 1:
+           print(cities)
+        elif option == 2:
+            repeat = "y"
+            while repeat == "y":
+                character = input("Enter a key: ").lower()
+                for city in cities:
+                    if character in city:
+                        print(city)
+                repeat = input("Search for another city? (y/n): ").lower()
+        elif option == 3:
+            print("hi3")
+        elif option == 4:
+            print("hi4")
+        else:
+            print("Invalid option.")
 while True:
     print("\nWelcome to We Deliver! PLEASE CHOOSE AN OPTION: \n1. Drivers' menu | 2. Cities' menu | 3. Exit")
     option = int(input("\nEnter an option: "))
     if option == 1:
         drivers_main_menu()
     elif option == 2:
-        print("Thank you!2")
+        cities_main_menu()
     elif option == 3:
         print("Thank you!")
         break
