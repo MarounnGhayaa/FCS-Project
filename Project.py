@@ -12,6 +12,9 @@ class City:
     def __init__(self, name, next_city):
         self.name = name
         self.next_city = next_city
+def sort_cities(list):
+    sorted_list = sorted(list, reverse=True)
+    print(sorted_list)
 def drivers_main_menu():
     driver_id_counter = 3
     while True:
@@ -63,7 +66,7 @@ def cities_main_menu():
         print("4. Drivers delivering to city")
         option = int(input("\nEnter an option: "))
         if option == 1:
-           print(cities)
+           sort_cities(cities)
         elif option == 2:
             repeat = "y"
             while repeat == "y":
