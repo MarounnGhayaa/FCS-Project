@@ -1,5 +1,17 @@
 drivers = [(1, "maroun", "beirut"), (2, "georges", "zahle")]
-cities = ["beirut", "tripoli", "zahle", "jbeil"]
+cities = ["beirut", "akkar", "zahle", "jbeil", "saida"]
+cities_matrix = [
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0],
+]
+city_indices = {}
+index = 0
+for city in cities:
+    city_indices[city] = index
+    index += 1
 class Driver:
     def __init__ (self, driver_id, driver_name, start_city):
         self.driver_id = driver_id
@@ -15,6 +27,13 @@ class City:
 def sort_cities(list):
     sorted_list = sorted(list, reverse=True)
     print(sorted_list)
+def add_city(city_name):
+    cities.append(city_name)
+    city_indices[city_name] = len(cities) - 1
+    for row in cities_matrix:
+        row.append(0)
+    new_row = [0] * len(cities)
+    cities_matrix.append(new_row)
 def drivers_main_menu():
     driver_id_counter = 3
     while True:
@@ -32,7 +51,7 @@ def drivers_main_menu():
             if start_city not in cities:
                 city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? (y/n): ").lower()
                 if city_question == "y":
-                    cities.append(start_city)
+                    add_city(start_city)
                 else:
                     print("Both driver and city were not added!")
                     break
@@ -76,9 +95,22 @@ def cities_main_menu():
                         print(city)
                 repeat = input("Search for another city? (y/n): ").lower()
         elif option == 3:
-            print("hi3")
+            city_name = input("Enter city to check neighbors: ").lower()
+            if city_name in cities:
+                city_index = city_indices[city_name]
+                neighbors = []
+                for i in range(len(cities_matrix[city_index])):
+                    if cities_matrix[city_index][i] == 1:
+                        neighbors.append(cities[i])
+                if neighbors:
+                    print("Neighboring cities:", neighbors)
+                else:
+                    print("No neighbors")
+            else:
+                print("City not found.")
         elif option == 4:
             print("hi4")
+            break
         else:
             print("Invalid option.")
 while True:
