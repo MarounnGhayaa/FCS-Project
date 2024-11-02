@@ -1,26 +1,24 @@
-drivers = [(1, "maroun", "beirut", "jbeil"), (2, "georges", "zahle", "saida")]
+drivers = [(1, "maroun", "beirut"), (2, "georges", "zahle")]
 cities = ["beirut", "akkar", "zahle", "jbeil", "saida"]
 cities_matrix = [
-    [0, 0, 0, 1, 0],
-    [0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1],
-    [1, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0],
+    [1, 0, 0, 1, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 1],
+    [1, 1, 0, 1, 0],
+    [0, 0, 1, 0, 1],
 ]
-city_indices = {}
-index = 0
-for city in cities:
-    city_indices[city] = index
-    index += 1
+city_indices = {"beirut":0, "akkar":1, "zahle":2, "jbeil":3, "saida":4}
 class Driver:
-    def __init__ (self, driver_id, driver_name, start_city, delivery_city):
+    def __init__ (self, driver_id, driver_name, start_city):
         self.driver_id = driver_id
         self.driver_name = driver_name
         self.start_city = start_city
-        self.delivery_city = delivery_city
     def tuple_driver(self):
-        new_driver = (self.driver_id, self.driver_name, self.start_city, self.delivery_city)
+        new_driver = (self.driver_id, self.driver_name, self.start_city)
         drivers.append(new_driver)
+def list_drivers():
+    for driver in drivers:
+        print(driver)
 class City:
     def __init__(self, name, next_city):
         self.name = name
@@ -29,12 +27,21 @@ def sort_cities(list):
     sorted_list = sorted(list, reverse=True)
     print(sorted_list)
 def add_city(city_name):
+    index = 5
     cities.append(city_name)
     city_indices[city_name] = len(cities) - 1
     for row in cities_matrix:
         row.append(0)
     new_row = [0] * len(cities)
     cities_matrix.append(new_row)
+    index += 1
+def add_to_database(city_name):
+    if city_name not in cities:
+        city_question = input(city_name + " is not in the database. Do you want to add it to the list of cities? (y/n): ").lower()
+        if city_question == "y":
+            add_city(city_name)
+        else:
+            print("Both driver and city were not added!")
 def drivers_main_menu():
     driver_id_counter = 3
     while True:
@@ -45,24 +52,13 @@ def drivers_main_menu():
         print("4. To go back to the main menu")
         option = int(input("\nEnter an option: "))
         if option == 1:
-           print(drivers)
+           list_drivers()
         elif option == 2:
             name = input("Enter driver's name: ")
             start_city = input("Enter driver's start city: ").lower()
-            delivery_city = input("Enter driver's destination city: ").lower()
-            if start_city not in cities:
-                city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? (y/n): ").lower()
-                if city_question == "y":
-                    add_city(start_city)
-                else:
-                    print("Both driver and city were not added!")
-                    break
-            if delivery_city not in cities:
-                delivery_question = input(delivery_city + " is not in the database. Do you want to add it to the list of delivery cities? (y/n): ").lower()
-                if delivery_question == "y":
-                    add_city(delivery_city)
+            add_to_database(start_city)
             driver_id = driver_id_counter
-            new_driver = Driver(driver_id, name, start_city, delivery_city)
+            new_driver = Driver(driver_id, name, start_city)
             new_driver.tuple_driver()
             driver_id_counter += 1
         elif option == 3:
@@ -76,7 +72,9 @@ def drivers_main_menu():
             for city in city_groups:
                 group = city_groups[city]
                 if len(group) > 1:
-                    print ("Drivers in ", city, ":", group)
+                    print (city, ":", group)
+                else:
+                    print(city, ":", group)
         elif option == 4:
             print("Back to main menu!")
             break
@@ -93,13 +91,10 @@ def cities_main_menu():
         if option == 1:
            sort_cities(cities)
         elif option == 2:
-            repeat = "y"
-            while repeat == "y":
-                character = input("Enter a key: ").lower()
-                for city in cities:
-                    if character in city:
-                        print(city)
-                repeat = input("Search for another city? (y/n): ").lower()
+            character = input("Enter a key: ").lower()
+            for city in cities:
+                if character in city:
+                    print(city)
         elif option == 3:
             city_name = input("Enter city to check neighbors: ").lower()
             if city_name in cities:
@@ -116,14 +111,19 @@ def cities_main_menu():
                 print("City not found.")
         elif option == 4:
             dest_city = input("Enter a city to see who is delivering to it: ")
+            destinations = []
             for driver in drivers:
-                if dest_city == driver[3]:
-                    print("\n", driver[1], " is delivering from: ", driver[2], " to: ", dest_city)
-                    print("Driver info: ", driver)
+                destinations.append(driver[2])
+            if dest_city in destinations:
+                for driver in drivers:
+                    if driver[2] == dest_city:
+                        print(driver[1], "is delivering to: ", dest_city)
+            else:
+                print("No one is delivering to this city")
         else:
             print("Invalid option.")
 while True:
-    print("\nWelcome to We Deliver! PLEASE CHOOSE AN OPTION: \n1. Drivers' menu | 2. Cities' menu | 3. Exit")
+    print("\nWelcome to We Deliver! PLEASE CHOOSE AN OPTION: \n1. Drivers' menu \n2. Cities' menu \n3. Exit")
     option = int(input("\nEnter an option: "))
     if option == 1:
         drivers_main_menu()
