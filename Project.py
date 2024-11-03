@@ -1,13 +1,6 @@
 drivers = [(1, "maroun", "beirut"), (2, "georges", "zahle")]
 cities = ["beirut", "akkar", "zahle", "jbeil", "saida"]
-cities_matrix = [
-    [1, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 1],
-    [1, 1, 0, 1, 0],
-    [0, 0, 1, 0, 1],
-]
-city_indices = {"beirut":0, "akkar":1, "zahle":2, "jbeil":3, "saida":4}
+neighbors = {"akkar": ["jbeil"], "jbeil": ["akkar", "beirut"], "beirut": ["jbeil"], "zahle": ["saida"], "saida": ["zahle"]}
 class Driver:
     def __init__ (self, driver_id, driver_name, start_city):
         self.driver_id = driver_id
@@ -19,29 +12,9 @@ class Driver:
 def list_drivers():
     for driver in drivers:
         print(driver)
-class City:
-    def __init__(self, name, next_city):
-        self.name = name
-        self.next_city = next_city
 def sort_cities(list):
     sorted_list = sorted(list, reverse=True)
     print(sorted_list)
-def add_city(city_name):
-    index = 5
-    cities.append(city_name)
-    city_indices[city_name] = len(cities) - 1
-    for row in cities_matrix:
-        row.append(0)
-    new_row = [0] * len(cities)
-    cities_matrix.append(new_row)
-    index += 1
-def add_to_database(city_name):
-    if city_name not in cities:
-        city_question = input(city_name + " is not in the database. Do you want to add it to the list of cities? (y/n): ").lower()
-        if city_question == "y":
-            add_city(city_name)
-        else:
-            print("Both driver and city were not added!")
 def drivers_main_menu():
     driver_id_counter = 3
     while True:
@@ -56,11 +29,17 @@ def drivers_main_menu():
         elif option == 2:
             name = input("Enter driver's name: ")
             start_city = input("Enter driver's start city: ").lower()
-            add_to_database(start_city)
+            if start_city not in cities:
+                city_question = input(start_city + " is not in the database. Do you want to add it to the list of start cities? y/n: ").lower()
+                if city_question == "y":
+                    cities.append(start_city)
+                else:
+                    print("Both driver and city were not added!")
+                    continue
             driver_id = driver_id_counter
             new_driver = Driver(driver_id, name, start_city)
             new_driver.tuple_driver()
-            driver_id_counter += 1
+            driver_id_counter +=1
         elif option == 3:
             city_groups = {}
             for driver in drivers:
@@ -96,30 +75,37 @@ def cities_main_menu():
                 if character in city:
                     print(city)
         elif option == 3:
-            city_name = input("Enter city to check neighbors: ").lower()
-            if city_name in cities:
-                city_index = city_indices[city_name]
-                neighbors = []
-                for i in range(len(cities_matrix[city_index])):
-                    if cities_matrix[city_index][i] == 1:
-                        neighbors.append(cities[i])
-                if neighbors:
-                    print("Neighboring cities:", neighbors)
-                else:
-                    print("No neighbors")
-            else:
+            city_name = input("Enter a city to check neighbors: ").lower()
+            if city_name not in cities:
                 print("City not found.")
-        elif option == 4:
-            dest_city = input("Enter a city to see who is delivering to it: ")
-            destinations = []
-            for driver in drivers:
-                destinations.append(driver[2])
-            if dest_city in destinations:
-                for driver in drivers:
-                    if driver[2] == dest_city:
-                        print(driver[1], "is delivering to: ", dest_city)
             else:
-                print("No one is delivering to this city")
+                found = False
+                for city in neighbors:
+                    if city_name == city:
+                        found = True
+                        print(neighbors[city])
+                if not found:
+                    print("City has no neighbors.")
+        elif option == 4:
+            dest_city = input("Enter a city to see who is delivering to it: ").lower()
+            if dest_city not in cities:
+                print("City not found.")
+            else:
+                destinations = []
+                for driver in drivers:
+                    destinations.append(driver[2])
+                if dest_city in destinations:
+                    for driver in drivers:
+                        if driver[2] == dest_city:
+                            print(driver, "is in this city")
+                else:
+                    print("No one is delivering to this city")
+                for city in neighbors:
+                    if dest_city in neighbors[city]: 
+                        for driver in drivers:
+                            if driver[2] == city:
+                                print(driver, "can reach", dest_city, "from: ", city)
+                    
         else:
             print("Invalid option.")
 while True:
