@@ -70,10 +70,14 @@ def cities_main_menu():
         if option == 1:
            sort_cities(cities)
         elif option == 2:
+            found = False
             character = input("Enter a key: ").lower()
             for city in cities:
                 if character in city:
+                    found = True
                     print(city)
+            if not found:
+                print("No city contains that key.")
         elif option == 3:
             city_name = input("Enter a city to check neighbors: ").lower()
             if city_name not in cities:
